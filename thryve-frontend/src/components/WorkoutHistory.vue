@@ -1,5 +1,4 @@
 <template>
-  <h1>Workout Log</h1>
   <div>
     <DataTable
       v-if="sortedWorkouts.length > 0"
