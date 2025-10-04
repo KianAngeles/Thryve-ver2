@@ -32,9 +32,12 @@ app.use(express.json()); // Parse incoming JSON requests
 app.use(morgan('dev')); // Logs requests in dev format
 
 // CORS setup (restricts who can access API)
+// Temporarily allow all origins for testing
 app.use(cors({
-  origin: FRONTEND_ORIGIN, // Only allow requests from frontend
-  methods: ['GET','POST','PUT','DELETE']
+  origin: true, // Allow all origins for now
+  methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+  credentials: true, // Allow credentials (cookies, authorization headers)
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // ====== RATE LIMITING ====== //
