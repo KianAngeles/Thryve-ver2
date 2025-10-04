@@ -3,8 +3,28 @@ require('dotenv').config();
 const app = require('./app');
 const connectDB = require('./config/db');
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3001;
 const MONGO_URI = process.env.MONGO_URI;
+
+// Enhanced environment variable validation
+console.log('🔍 Environment Variables Check:');
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('PORT:', PORT);
+console.log('MONGO_URI exists:', !!MONGO_URI);
+console.log('MONGO_URI length:', MONGO_URI ? MONGO_URI.length : 0);
+console.log('JWT_SECRET exists:', !!process.env.JWT_SECRET);
+
+// Validate required environment variables
+if (!MONGO_URI) {
+  console.error('❌ MONGO_URI environment variable is not set!');
+  console.error('Available environment variables:', Object.keys(process.env).filter(key => !key.includes('PASSWORD')));
+  process.exit(1);
+}
+
+if (!process.env.JWT_SECRET) {
+  console.error('❌ JWT_SECRET environment variable is not set!');
+  process.exit(1);
+}
 
 // Connect to database
 connectDB(MONGO_URI);

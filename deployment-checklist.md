@@ -27,7 +27,11 @@ JWT_SECRET=8c7dfe1a0a4f1b6d92c4a1e3e7f58b26f37a4e7b2c8f91d03d64a9cce7a9d0a1
 JWT_EXPIRES_IN=7d
 EMAIL_USER=thryve.noreply@gmail.com
 EMAIL_PASS=xkmc lgdu zxie qxlv
+FRONTEND_ORIGIN=https://your-vercel-url.vercel.app
+FRONTEND_URL=https://your-vercel-url.vercel.app
 ```
+
+**⚠️ CRITICAL: Make sure MONGO_URI is EXACTLY as shown above with no extra spaces or characters**
 
 8. [ ] Copy Railway deployment URL (something like: https://thryve-backend-production.railway.app)
 9. [ ] Test backend health check: [Railway-URL]/api/health
