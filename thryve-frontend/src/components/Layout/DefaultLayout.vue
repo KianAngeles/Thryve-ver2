@@ -1,0 +1,124 @@
+<template>
+  <div class="layout">
+    <!-- Sidebar -->
+    <AppSidebar :class="{ open: isOpen }" />
+
+    <!-- Overlay (tablet/mobile only) -->
+    <div v-if="isOpen && isMobile" class="overlay" @click="toggleSidebar"></div>
+
+    <!-- Main Content -->
+    <main :class="{ 'full-width': !isOpen && !isMobile }" class="main-content">
+      <div class="content-body">
+        <slot :toggleSidebar="toggleSidebar" />
+      </div>
+    </main>
+  </div>
+</template>
+
+<script>
+import AppSidebar from "../Sidebar/AppSidebar.vue";
+
+export default {
+  components: { AppSidebar },
+  data() {
+    return {
+      isOpen: window.innerWidth > 1024,
+      isMobile: window.innerWidth <= 1024,
+    };
+  },
+  methods: {
+    toggleSidebar() {
+      this.isOpen = !this.isOpen;
+    },
+    handleResize() {
+      this.isMobile = window.innerWidth <= 1024;
+      if (!this.isMobile) {
+        this.isOpen = true;
+      } else {
+        this.isOpen = false;
+      }
+    },
+  },
+  mounted() {
+    this.handleResize();
+    window.addEventListener("resize", this.handleResize);
+  },
+  beforeUnmount() {
+    window.removeEventListener("resize", this.handleResize);
+  },
+};
+</script>
+
+<style>
+.layout {
+  display: flex;
+  height: 100vh;
+  background: hsl(0 0% 96%);
+  overflow: hidden;
+  position: relative;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 1rem;
+  transition: margin-left 0.3s ease;
+  margin-left: 18rem;
+}
+
+.main-content.full-width {
+  margin-left: 0;
+}
+
+.content-body {
+  background: #fff;
+  flex: 1;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 15;
+}
+
+@media (max-width: 1200px) and (min-width: 1025px) {
+  .main-content {
+    margin-left: 14rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .main-content {
+    margin-left: 0 !important;
+  }
+
+  .content-body {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    padding: 0.5rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .main-content {
+    margin-left: 12rem; 
+    padding: 0.5rem;
+  }
+
+  .content-body {
+    padding: 0.75rem;
+    border-radius: 12px;
+  }
+}
+</style>

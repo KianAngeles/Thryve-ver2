@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thryve Application Architecture Diagram</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        .mermaid {
+            text-align: center;
+            margin: 20px 0;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .feature-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        .feature-card h4 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        @media print {
+            body { margin: 0; }
+            .mermaid { page-break-inside: avoid; }
+            h1, h2, h3 { page-break-after: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <h1>🏗️ Thryve Application Architecture Diagram</h1>
+    
+    <h2>MEVN Stack Architecture (MongoDB, Express.js, Vue.js, Node.js)</h2>
+    
+    <div class="mermaid">
+graph TB
+    %% Frontend Layer
+    subgraph "Frontend (Vue.js + Vite)"
+        direction TB
+        Browser[Web Browser]
+        VueApp[Vue.js Application]
+        Router[Vue Router]
+        Pinia[Pinia Store]
+        Components[Vue Components]
+        Services[API Services]
+        
+        Browser --> VueApp
+        VueApp --> Router
+        VueApp --> Pinia
+        VueApp --> Components
+        Components --> Services
+        Pinia --> Services
+    end
+
+    %% Backend Layer
+    subgraph "Backend (Node.js + Express.js)"
+        direction TB
+        ExpressApp[Express.js Server]
+        Middleware[Middleware Layer]
+        Routes[API Routes]
+        Controllers[Controllers]
+        Models[Mongoose Models]
+        Utils[Utilities]
+        Validators[Input Validators]
+        
+        ExpressApp --> Middleware
+        Middleware --> Routes
+        Routes --> Controllers
+        Controllers --> Models
+        Controllers --> Validators
+        Controllers --> Utils
+    end
+
+    %% Database Layer
+    subgraph "Database (MongoDB)"
+        direction TB
+        MongoDB[(MongoDB Database)]
+        Collections[Collections]
+        Indexes[Indexes & Constraints]
+        
+        MongoDB --> Collections
+        Collections --> Indexes
+    end
+
+    %% External Services
+    subgraph "External Services"
+        EmailService[Email Service<br/>Nodemailer]
+        FileStorage[Static File Storage]
+    end
+
+    %% Connections
+    Services -.->|HTTP/HTTPS<br/>REST API| ExpressApp
+    Models -.->|Mongoose ODM| MongoDB
+    Utils -.->|SMTP| EmailService
+    ExpressApp -.->|Static Files| FileStorage
+
+    %% Styling
+    classDef frontend fill:#42b883,stroke:#2c3e50,stroke-width:2px,color:#fff
+    classDef backend fill:#68a063,stroke:#2c3e50,stroke-width:2px,color:#fff
+    classDef database fill:#13aa52,stroke:#2c3e50,stroke-width:2px,color:#fff
+    classDef external fill:#f39c12,stroke:#2c3e50,stroke-width:2px,color:#fff
+
+    class Browser,VueApp,Router,Pinia,Components,Services frontend
+    class ExpressApp,Middleware,Routes,Controllers,Models,Utils,Validators backend
+    class MongoDB,Collections,Indexes database
+    class EmailService,FileStorage external
+    </div>
+
+    <h2>🖼️ Frontend Layer (Vue.js)</h2>
+    
+    <div class="mermaid">
+graph LR
+    subgraph "Vue.js Components"
+        App[App.vue]
+        Layout[Layout Components]
+        Views[Views/Pages]
+        Components[Reusable Components]
+        Forms[Form Components]
+        
+        App --> Layout
+        App --> Views
+        Views --> Components
+        Views --> Forms
+    end
+
+    subgraph "State Management"
+        AuthStore[Auth Store]
+        PreferencesStore[Preferences Store]
+        
+        Views --> AuthStore
+        Views --> PreferencesStore
+    end
+
+    subgraph "Services"
+        AuthService[Auth Service]
+        MealService[Meal Service]
+        WorkoutService[Workout Service]
+        DashboardService[Dashboard Service]
+        
+        AuthStore --> AuthService
+        Views --> MealService
+        Views --> WorkoutService
+        Views --> DashboardService
+    end
+    </div>
+
+    <h2>⚙️ Backend Layer (Express.js)</h2>
+    
+    <div class="mermaid">
+graph TB
+    subgraph "Express.js Application"
+        Server[server.js]
+        App[app.js]
+        Config[Configuration]
+        
+        Server --> App
+        Server --> Config
+    end
+
+    subgraph "Middleware Stack"
+        Helmet[Helmet - Security]
+        CORS[CORS - Cross-Origin]
+        Auth[Auth Middleware]
+        RateLimit[Rate Limiting]
+        ErrorHandler[Error Handler]
+        
+        App --> Helmet
+        Helmet --> CORS
+        CORS --> RateLimit
+        RateLimit --> Auth
+        Auth --> ErrorHandler
+    end
+
+    subgraph "API Routes"
+        AuthRoutes[/api/auth]
+        UserRoutes[/api/users]
+        WorkoutRoutes[/api/workouts]
+        MealRoutes[/api/meals]
+        DashboardRoutes[/api/dashboard]
+        AchievementRoutes[/api/achievements]
+        
+        App --> AuthRoutes
+        App --> UserRoutes
+        App --> WorkoutRoutes
+        App --> MealRoutes
+        App --> DashboardRoutes
+        App --> AchievementRoutes
+    end
+
+    subgraph "Controllers"
+        AuthController[Auth Controller]
+        UserController[User Controller]
+        WorkoutController[Workout Controller]
+        MealController[Meal Controller]
+        DashboardController[Dashboard Controller]
+        
+        AuthRoutes --> AuthController
+        UserRoutes --> UserController
+        WorkoutRoutes --> WorkoutController
+        MealRoutes --> MealController
+        DashboardRoutes --> DashboardController
+    end
+    </div>
+
+    <h2>🗄️ Database Layer (MongoDB)</h2>
+    
+    <div class="mermaid">
+graph TB
+    subgraph "MongoDB Collections"
+        Users[(Users Collection)]
+        Meals[(Meals Collection)]
+        Workouts[(Workouts Collection)]
+        Progress[(Progress Collection)]
+        UserAchievements[(User Achievements)]
+        MasterAchievements[(Master Achievements)]
+        Preferences[(Preferences Collection)]
+        WaterLogs[(Water Logs Collection)]
+        SleepLogs[(Sleep Logs Collection)]
+    end
+
+    subgraph "Relationships"
+        Users -.->|userId| Meals
+        Users -.->|userId| Workouts
+        Users -.->|userId| Progress
+        Users -.->|userId| UserAchievements
+        Users -.->|userId| Preferences
+        Users -.->|userId| WaterLogs
+        Users -.->|userId| SleepLogs
+        MasterAchievements -.->|type| UserAchievements
+    end
+
+    subgraph "Indexes"
+        UserEmail[email: unique]
+        CompoundIdx[userId + date: compound]
+        UserIdx[userId: index]
+        
+        Users --> UserEmail
+        Meals --> CompoundIdx
+        Workouts --> CompoundIdx
+        Progress --> UserIdx
+    end
+    </div>
+
+    <h2>🔄 Data Flow Architecture</h2>
+    
+    <div class="mermaid">
+sequenceDiagram
+    participant U as User Browser
+    participant V as Vue.js App
+    participant S as Pinia Store
+    participant API as Express.js API
+    participant M as Mongoose Models
+    participant DB as MongoDB
+
+    U->>V: User Interaction
+    V->>S: Update State
+    S->>API: HTTP Request (JWT Token)
+    API->>API: Middleware Validation
+    API->>M: Model Operation
+    M->>DB: Database Query
+    DB-->>M: Query Result
+    M-->>API: Processed Data
+    API-->>S: JSON Response
+    S-->>V: State Update
+    V-->>U: UI Update
+    </div>
+
+    <h2>🔒 Security Architecture</h2>
+    
+    <div class="mermaid">
+graph TB
+    subgraph "Security Layers"
+        Browser[Browser Security]
+        Transport[HTTPS Transport]
+        CORS[CORS Policy]
+        RateLimit[Rate Limiting]
+        Auth[JWT Authentication]
+        Validation[Input Validation]
+        Sanitization[Data Sanitization]
+        Encryption[Password Encryption]
+    end
+
+    subgraph "Security Flow"
+        Request[Incoming Request]
+        Helmet[Helmet Headers]
+        TokenCheck[JWT Verification]
+        InputCheck[Input Validation]
+        AuthCheck[Authorization Check]
+        Response[Secure Response]
+        
+        Request --> Helmet
+        Helmet --> TokenCheck
+        TokenCheck --> InputCheck
+        InputCheck --> AuthCheck
+        AuthCheck --> Response
+    end
+    </div>
+
+    <h2>📚 Technology Stack Details</h2>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Layer</th>
+                <th>Technology</th>
+                <th>Purpose</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td rowspan="6"><strong>Frontend</strong></td><td>Vue.js 3</td><td>Component-based UI framework</td></tr>
+            <tr><td>Vue Router</td><td>Client-side routing</td></tr>
+            <tr><td>Pinia</td><td>State management</td></tr>
+            <tr><td>Vite</td><td>Build tool and dev server</td></tr>
+            <tr><td>Axios</td><td>HTTP client</td></tr>
+            <tr><td>PrimeVue</td><td>UI component library</td></tr>
+            <tr><td rowspan="7"><strong>Backend</strong></td><td>Node.js</td><td>JavaScript runtime</td></tr>
+            <tr><td>Express.js</td><td>Web application framework</td></tr>
+            <tr><td>Mongoose</td><td>MongoDB object modeling</td></tr>
+            <tr><td>JWT</td><td>Authentication tokens</td></tr>
+            <tr><td>Bcrypt</td><td>Password hashing</td></tr>
+            <tr><td>Helmet</td><td>Security headers</td></tr>
+            <tr><td>Joi</td><td>Input validation</td></tr>
+            <tr><td rowspan="2"><strong>Database</strong></td><td>MongoDB</td><td>NoSQL document database</td></tr>
+            <tr><td>MongoDB Indexes</td><td>Query optimization</td></tr>
+            <tr><td rowspan="2"><strong>External</strong></td><td>Nodemailer</td><td>Email service</td></tr>
+            <tr><td>Static Files</td><td>Asset serving</td></tr>
+        </tbody>
+    </table>
+
+    <h2>✨ Key Features by Layer</h2>
+    
+    <div class="features">
+        <div class="feature-card">
+            <h4>🖥️ Frontend Features</h4>
+            <ul>
+                <li>🔐 User Authentication & Registration</li>
+                <li>📊 Dashboard Analytics</li>
+                <li>🏋️ Workout Tracking</li>
+                <li>🍽️ Meal Logging</li>
+                <li>💧 Water Intake Monitoring</li>
+                <li>😴 Sleep Tracking</li>
+                <li>🏆 Achievement System</li>
+                <li>👤 Profile Management</li>
+            </ul>
+        </div>
+
+        <div class="feature-card">
+            <h4>⚙️ Backend Features</h4>
+            <ul>
+                <li>🛡️ JWT Authentication</li>
+                <li>📝 Input Validation</li>
+                <li>🔒 Password Security</li>
+                <li>📧 Email Services</li>
+                <li>🚦 Rate Limiting</li>
+                <li>📊 Data Aggregation</li>
+                <li>🏆 Achievement Logic</li>
+                <li>📈 Progress Tracking</li>
+            </ul>
+        </div>
+
+        <div class="feature-card">
+            <h4>🗄️ Database Features</h4>
+            <ul>
+                <li>👥 User Management</li>
+                <li>📊 Health Data Storage</li>
+                <li>🔗 Relational Data Structure</li>
+                <li>📈 Performance Indexes</li>
+                <li>🔄 Data Integrity</li>
+                <li>📅 Time-series Data</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                htmlLabels: true,
+                curve: 'basis'
+            },
+            securityLevel: 'loose'
+        });
+    </script>
+</body>
+</html>

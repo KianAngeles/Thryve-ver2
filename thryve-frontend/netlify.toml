@@ -1,0 +1,24 @@
+# Netlify build settings for frontend
+
+[build]
+  # Build command
+  command = "npm run build"
+  
+  # Publish directory
+  publish = "dist"
+  
+  # Base directory
+  base = "thryve-frontend"
+
+[build.environment]
+  # Node.js version
+  NODE_VERSION = "18"
+
+# Redirect rules for SPA
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Environment variables (set in Netlify dashboard)
+# VITE_API_URL=https://your-backend-url.railway.app/api
