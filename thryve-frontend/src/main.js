@@ -9,7 +9,6 @@ import PrimeVue from 'primevue/config';
 import { definePreset } from '@primeuix/themes';
 import Nora from '@primeuix/themes/nora';
 import VueApexCharts from "vue3-apexcharts";
-import { inject } from '@vercel/analytics';
 
 // PrimeVue CSS
 import 'primeicons/primeicons.css';
@@ -65,5 +64,5 @@ const auth = useAuthStore(pinia);
 if (auth.token) {
   auth.fetchMe();
 }
-inject();
+
 app.mount('#app');
