@@ -36,7 +36,7 @@ const submit = async () => {
   isLoading.value = true; // ⏳ show loading
   try {
     const res = await axios.post(
-      "http://localhost:5000/api/auth/forgot-password",
+      "http://thryve-ver2-production.up.railway.app/api/auth/forgot-password",
       { email: email.value }
     );
     message.value = res.data.message;
