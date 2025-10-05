@@ -6,7 +6,6 @@ import { meals } from "../composables/useMeals.js";
 import DatePicker from "primevue/datepicker";
 
 const toast = useToast();
-
 const emit = defineEmits(["mealAdded"]);
 
 const foodName = ref("");
@@ -17,6 +16,11 @@ const today = new Date();
 const isLoading = ref(false);
 
 const stripTime = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+
+const formatLocalDate = (d) => {
+  const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+  return local.toISOString().split("T")[0];
+};
 
 const addMeal = async () => {
   if (!foodName.value.trim()) {
@@ -59,13 +63,12 @@ const addMeal = async () => {
   isLoading.value = true;
 
   try {
+    // ✅ Fixed: use formatLocalDate() instead of manual template
     const res = await api.post("/meals", {
       foodName: foodName.value.trim(),
       calories: Number(calories.value),
       protein: protein.value ? Number(protein.value) : 0,
-      date: `${date.value.getFullYear()}-${(date.value.getMonth() + 1)
-        .toString()
-        .padStart(2, "0")}-${date.value.getDate().toString().padStart(2, "0")}`,
+      date: formatLocalDate(date.value),
     });
 
     meals.value.unshift(res.data);
