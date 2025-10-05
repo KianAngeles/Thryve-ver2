@@ -17,12 +17,12 @@ const isLoading = ref(false);
 
 const stripTime = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
 
-const formatLocalDate = (d) => {
-  // Ensure it stays local, not UTC
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`; // e.g., "2025-10-05"
+const formatDateForServer = (d) => {
+  // Get current UTC date
+  const year = d.getUTCFullYear();
+  const month = String(d.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(d.getUTCDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 };
 
 const addMeal = async () => {
@@ -35,6 +35,7 @@ const addMeal = async () => {
     });
     return;
   }
+
   if (calories.value === null || calories.value < 0) {
     toast.add({
       severity: "warn",
@@ -44,6 +45,7 @@ const addMeal = async () => {
     });
     return;
   }
+
   if (protein.value !== null && protein.value < 0) {
     toast.add({
       severity: "warn",
@@ -53,6 +55,7 @@ const addMeal = async () => {
     });
     return;
   }
+
   if (stripTime(date.value) > stripTime(today)) {
     toast.add({
       severity: "warn",
@@ -66,13 +69,14 @@ const addMeal = async () => {
   isLoading.value = true;
 
   try {
-    // ✅ Fixed: use formatLocalDate() instead of manual template
-    console.log("Formatted date sent:", formatLocalDate(date.value));
+    const formattedDate = formatDateForServer(date.value);
+    console.log("📤 Final date sent to server (UTC):", formattedDate);
+
     const res = await api.post("/meals", {
       foodName: foodName.value.trim(),
       calories: Number(calories.value),
       protein: protein.value ? Number(protein.value) : 0,
-      date: formatLocalDate(date.value),
+      date: formattedDate,
     });
 
     meals.value.unshift(res.data);
@@ -85,7 +89,6 @@ const addMeal = async () => {
       life: 3000,
     });
 
-    // Reset form
     foodName.value = "";
     calories.value = null;
     protein.value = null;
@@ -102,6 +105,7 @@ const addMeal = async () => {
     isLoading.value = false;
   }
 };
+
 </script>
 
 <template>
