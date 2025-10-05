@@ -35,8 +35,9 @@ const submit = async () => {
 
   isLoading.value = true; // ⏳ show loading
   try {
+    const baseURL = import.meta.env.VITE_API_URL || "http://localhost:3001/api";
     const res = await axios.post(
-      "https://thryve-ver2-production.up.railway.app/api/auth/forgot-password",
+      `${baseURL}/auth/forgot-password`,
       { email: email.value }
     );
     message.value = res.data.message;
