@@ -13,7 +13,6 @@ const foodName = ref("");
 const calories = ref(null);
 const protein = ref(null);
 const date = ref(new Date());
-const today = new Date();
 const isLoading = ref(false);
 
 const stripTime = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
@@ -46,7 +45,7 @@ const addMeal = async () => {
     });
     return;
   }
-  if (stripTime(date.value) > stripTime(today)) {
+  if (stripTime(date.value) > stripTime(new Date())) {
     toast.add({
       severity: "warn",
       summary: "Validation",
@@ -139,7 +138,7 @@ const addMeal = async () => {
         <DatePicker
           v-model="date"
           showIcon
-          :maxDate="today"
+          :maxDate="new Date()"
           dateFormat="yy-mm-dd"
           placeholder="Select Date"
           class="w-full"
