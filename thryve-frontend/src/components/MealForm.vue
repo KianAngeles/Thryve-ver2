@@ -18,8 +18,11 @@ const isLoading = ref(false);
 const stripTime = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
 
 const formatLocalDate = (d) => {
-  const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
-  return local.toISOString().split("T")[0];
+  // Ensure it stays local, not UTC
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`; // e.g., "2025-10-05"
 };
 
 const addMeal = async () => {
@@ -64,6 +67,7 @@ const addMeal = async () => {
 
   try {
     // ✅ Fixed: use formatLocalDate() instead of manual template
+    console.log("Formatted date sent:", formatLocalDate(date.value));
     const res = await api.post("/meals", {
       foodName: foodName.value.trim(),
       calories: Number(calories.value),
