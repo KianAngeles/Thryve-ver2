@@ -110,31 +110,45 @@ exports.me = async (req, res, next) => {
 exports.forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
-    console.log("Route hit for:", email);
+    if (!email) return res.status(400).json({ error: "Email is required" });
 
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ error: "User not found" });
 
     const token = crypto.randomBytes(32).toString("hex");
     user.resetToken = token;
-    user.resetTokenExpiry = new Date(Date.now() + 3600000);
+    user.resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour
     await user.save();
 
-    console.log("Generating reset link...");
     const resetLink = `${process.env.FRONTEND_URL}/reset-password/${token}`;
-    console.log("Reset link:", resetLink);
+    const html = `
+  <div style="font-family: Geist, sans-serif; line-height: 1.6; color: #333;">
+    <h2 style="color: #2c3e50;">Password Reset Request</h2>
+    <p>Hello ${user.name || ""},</p>
+    <p>We received a request to reset the password for your account. Click the button below to reset it. This link will expire in <strong>1 hour</strong>.</p>
+    
+    <div style="text-align: center; margin: 20px 0;">
+      <a href="${resetLink}" 
+         style="background-color: #000; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
+        Reset Password
+      </a>
+    </div>
 
-    // 🧪 TEST: skip sending email
-    // await sendEmail(user.email, "Password Reset", html);
-    console.log("Skipping email send for debug");
+    <p>If you did not request a password reset, you can safely ignore this email.</p>
 
-    return res.json({ message: "Password reset link generated (check logs)" });
+    <p style="font-size: 0.9em; color: #777;">Thank you,<br />Thryve Team</p>
+  </div>
+`;
+
+    console.log("Sending email to:", user.email); // <-- check here
+    await sendEmail(user.email, "Password Reset", html);
+
+    res.json({ message: "Check your email for reset link" });
   } catch (err) {
-    console.error("Forgot password error:", err);
-    return res.status(500).json({ error: "Something went wrong" });
+    console.error(err);
+    res.status(500).json({ error: "Something went wrong" });
   }
 };
-
 
 exports.resetPassword = async (req, res) => {
   try {
