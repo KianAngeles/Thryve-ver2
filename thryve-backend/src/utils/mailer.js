@@ -1,15 +1,16 @@
 const { Resend } = require('resend');
 
-// Initialize Resend with API key from environment
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Initialize Resend with hardcoded API key for Railway troubleshooting
+// TODO: Remove hardcoded key once Railway env vars are working
+const resend = new Resend('re_Xr9ukaDa_CvDYjCqHcVURUxnQLtktGcKQ');
 
 const sendEmail = async (to, subject, html) => {
   try {
     console.log('📧 Attempting to send email to:', to);
     console.log('📧 Using Resend from:', process.env.FROM_EMAIL || 'onboarding@resend.dev');
-    console.log('📧 Resend API Key present:', !!process.env.RESEND_API_KEY);
-    console.log('📧 Resend API Key length:', process.env.RESEND_API_KEY?.length);
-    console.log('📧 Resend API Key format:', process.env.RESEND_API_KEY?.substring(0, 3) + '***' + process.env.RESEND_API_KEY?.substring(process.env.RESEND_API_KEY.length - 3));
+    console.log('📧 Using hardcoded Resend API key (Railway troubleshooting)');
+    console.log('📧 API Key format: re_Xr9***GcKQ');
+    console.log('📧 Environment:', process.env.NODE_ENV);
     
     const result = await resend.emails.send({
       from: process.env.FROM_EMAIL || 'onboarding@resend.dev',
