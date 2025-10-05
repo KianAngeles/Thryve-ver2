@@ -1,6 +1,6 @@
 const { Resend } = require('resend');
 
-// Initialize Resend
+// Initialize Resend with API key from environment
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const sendEmail = async (to, subject, html) => {
