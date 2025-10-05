@@ -8,6 +8,8 @@ const sendEmail = async (to, subject, html) => {
     console.log('📧 Attempting to send email to:', to);
     console.log('📧 Using Resend from:', process.env.FROM_EMAIL || 'onboarding@resend.dev');
     console.log('📧 Resend API Key present:', !!process.env.RESEND_API_KEY);
+    console.log('📧 Resend API Key length:', process.env.RESEND_API_KEY?.length);
+    console.log('📧 Resend API Key format:', process.env.RESEND_API_KEY?.substring(0, 3) + '***' + process.env.RESEND_API_KEY?.substring(process.env.RESEND_API_KEY.length - 3));
     
     const result = await resend.emails.send({
       from: process.env.FROM_EMAIL || 'onboarding@resend.dev',
@@ -24,6 +26,7 @@ const sendEmail = async (to, subject, html) => {
     console.error('📧 Error details:', {
       name: err.name,
       message: err.message,
+      statusCode: err.statusCode
     });
     throw err; // Re-throw to handle in controller
   }
