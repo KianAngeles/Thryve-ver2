@@ -150,12 +150,16 @@ exports.forgotPassword = async (req, res) => {
 `;
 
     console.log("📧 Sending email to:", user.email);
+    console.log("🔧 About to call sendEmail function...");
     
     try {
-      await sendEmail(user.email, "Password Reset", html);
+      const emailResult = await sendEmail(user.email, "Password Reset", html);
+      console.log("✅ Email sent successfully, result:", emailResult);
       res.json({ message: "Check your email for reset link" });
     } catch (emailError) {
-      console.error('❌ Failed to send email:', emailError);
+      console.error('❌ Failed to send email in forgot password:', emailError);
+      console.error('❌ Email error name:', emailError.name);
+      console.error('❌ Email error message:', emailError.message);
       res.status(500).json({ 
         error: "Failed to send email. Please try again later.",
         details: process.env.NODE_ENV === 'development' ? emailError.message : undefined

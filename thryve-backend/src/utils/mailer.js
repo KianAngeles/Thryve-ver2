@@ -18,8 +18,16 @@ const sendEmail = async (to, subject, html) => {
       html,
     });
 
-    console.log('✅ Email sent successfully to', to);
     console.log('📧 Resend response:', result);
+
+    // Check if Resend returned an error in the response
+    if (result.error) {
+      console.error('❌ Resend API returned error:', result.error);
+      throw new Error(`Resend API Error: ${result.error.message}`);
+    }
+
+    console.log('✅ Email sent successfully to', to);
+    console.log('📧 Email ID:', result.data?.id);
     return result;
   } catch (err) {
     console.error('❌ Resend email sending error:', err);
