@@ -6,6 +6,7 @@ import { meals } from "../composables/useMeals.js";
 import DatePicker from "primevue/datepicker";
 
 const toast = useToast();
+
 const emit = defineEmits(["mealAdded"]);
 
 const foodName = ref("");
@@ -27,7 +28,6 @@ const addMeal = async () => {
     });
     return;
   }
-
   if (calories.value === null || calories.value < 0) {
     toast.add({
       severity: "warn",
@@ -37,7 +37,6 @@ const addMeal = async () => {
     });
     return;
   }
-
   if (protein.value !== null && protein.value < 0) {
     toast.add({
       severity: "warn",
@@ -47,7 +46,6 @@ const addMeal = async () => {
     });
     return;
   }
-
   if (stripTime(date.value) > stripTime(today)) {
     toast.add({
       severity: "warn",
@@ -65,7 +63,9 @@ const addMeal = async () => {
       foodName: foodName.value.trim(),
       calories: Number(calories.value),
       protein: protein.value ? Number(protein.value) : 0,
-      date: `${date.value.getFullYear()}-${(date.value.getMonth() + 1).toString().padStart(2, "0")}-${date.value.getDate().toString().padStart(2, "0")}`,
+      date: `${date.value.getFullYear()}-${(date.value.getMonth() + 1)
+        .toString()
+        .padStart(2, "0")}-${date.value.getDate().toString().padStart(2, "0")}`,
     });
 
     meals.value.unshift(res.data);
@@ -96,7 +96,6 @@ const addMeal = async () => {
   }
 };
 </script>
-
 
 <template>
   <form @submit.prevent="addMeal" class="form-grid">
