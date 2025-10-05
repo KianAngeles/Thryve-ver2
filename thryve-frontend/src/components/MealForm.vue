@@ -15,13 +15,14 @@ const date = ref(new Date());
 const today = new Date();
 const isLoading = ref(false);
 
+// Strip time for date-only comparisons
 const stripTime = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
 
+// ✅ FIXED: Send the exact local date selected by the user (no timezone offset)
 const formatDateForServer = (d) => {
-  // Get current UTC date
-  const year = d.getUTCFullYear();
-  const month = String(d.getUTCMonth() + 1).padStart(2, "0");
-  const day = String(d.getUTCDate()).padStart(2, "0");
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 };
 
@@ -70,7 +71,7 @@ const addMeal = async () => {
 
   try {
     const formattedDate = formatDateForServer(date.value);
-    console.log("📤 Final date sent to server (UTC):", formattedDate);
+    console.log("📤 Final date sent to server (LOCAL):", formattedDate);
 
     const res = await api.post("/meals", {
       foodName: foodName.value.trim(),
@@ -89,6 +90,7 @@ const addMeal = async () => {
       life: 3000,
     });
 
+    // Reset form
     foodName.value = "";
     calories.value = null;
     protein.value = null;
@@ -105,8 +107,8 @@ const addMeal = async () => {
     isLoading.value = false;
   }
 };
-
 </script>
+
 
 <template>
   <form @submit.prevent="addMeal" class="form-grid">
