@@ -6,7 +6,6 @@ import { meals } from "../composables/useMeals.js";
 import DatePicker from "primevue/datepicker";
 
 const toast = useToast();
-
 const emit = defineEmits(["mealAdded"]);
 
 const foodName = ref("");
@@ -16,6 +15,12 @@ const date = ref(new Date());
 const isLoading = ref(false);
 
 const stripTime = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+
+// ✅ New helper to format date correctly (no timezone shift)
+const formatLocalDate = (d) => {
+  const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+  return local.toISOString().split("T")[0]; // "YYYY-MM-DD"
+};
 
 const addMeal = async () => {
   if (!foodName.value.trim()) {
@@ -27,6 +32,7 @@ const addMeal = async () => {
     });
     return;
   }
+
   if (calories.value === null || calories.value < 0) {
     toast.add({
       severity: "warn",
@@ -36,6 +42,7 @@ const addMeal = async () => {
     });
     return;
   }
+
   if (protein.value !== null && protein.value < 0) {
     toast.add({
       severity: "warn",
@@ -45,6 +52,7 @@ const addMeal = async () => {
     });
     return;
   }
+
   if (stripTime(date.value) > stripTime(new Date())) {
     toast.add({
       severity: "warn",
@@ -62,9 +70,7 @@ const addMeal = async () => {
       foodName: foodName.value.trim(),
       calories: Number(calories.value),
       protein: protein.value ? Number(protein.value) : 0,
-      date: `${date.value.getFullYear()}-${(date.value.getMonth() + 1)
-        .toString()
-        .padStart(2, "0")}-${date.value.getDate().toString().padStart(2, "0")}`,
+      date: formatLocalDate(date.value), // ✅ use local date format
     });
 
     meals.value.unshift(res.data);
@@ -87,7 +93,9 @@ const addMeal = async () => {
     toast.add({
       severity: "error",
       summary: "Error",
-      detail: "Failed to add meal. Try again.",
+      detail:
+        err.response?.data?.errors?.[0]?.msg ||
+        "Failed to add meal. Try again.",
       life: 3000,
     });
   } finally {
@@ -95,6 +103,7 @@ const addMeal = async () => {
   }
 };
 </script>
+
 
 <template>
   <form @submit.prevent="addMeal" class="form-grid">
