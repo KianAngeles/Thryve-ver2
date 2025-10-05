@@ -3,26 +3,35 @@ const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    // user: process.env.EMAIL_USER, // email
-    //pass: process.env.EMAIL_PASS  // app password
-    user: "thryve.noreply@gmail.com", // email
-    pass: "xkmc lgdu zxie qxlv"  // app password
+    user: process.env.EMAIL_USER || "thryve.noreply@gmail.com", // email
+    pass: process.env.EMAIL_PASS || "xkmc lgdu zxie qxlv"  // app password
   }
 });
 
 const sendEmail = async (to, subject, html) => {
   const mailOptions = {
-    from: "thryve.noreply@gmail.com", //process.env.EMAIL_USER, // must be a valid email
+    from: process.env.EMAIL_USER || "thryve.noreply@gmail.com", // must be a valid email
     to,                            // recipient email
     subject,
     html
   };
 
   try {
-    await transporter.sendMail(mailOptions);
-    console.log('Email sent to', to);
+    console.log('📧 Attempting to send email to:', to);
+    console.log('📧 Using email service:', process.env.EMAIL_USER || "thryve.noreply@gmail.com");
+    
+    const result = await transporter.sendMail(mailOptions);
+    console.log('✅ Email sent successfully to', to);
+    console.log('📧 Message ID:', result.messageId);
+    return result;
   } catch (err) {
-    console.error('Email sending error:', err);
+    console.error('❌ Email sending error:', err);
+    console.error('📧 Error details:', {
+      code: err.code,
+      response: err.response,
+      command: err.command
+    });
+    throw err; // Re-throw to handle in controller
   }
 };
 

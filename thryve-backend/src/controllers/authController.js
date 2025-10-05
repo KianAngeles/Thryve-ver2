@@ -120,7 +120,16 @@ exports.forgotPassword = async (req, res) => {
     user.resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour
     await user.save();
 
-    const resetLink = `${process.env.FRONTEND_URL}/reset-password/${token}`;
+    // Use environment variable with fallback to Vercel URL
+    const frontendUrl = process.env.FRONTEND_URL || 
+                       process.env.FRONTEND_ORIGIN || 
+                       'https://thryve-ver2-git-master-kians-projects-0c2bedf0.vercel.app';
+    
+    const resetLink = `${frontendUrl}/reset-password/${token}`;
+    
+    console.log('🔗 Reset link generated:', resetLink);
+    console.log('🌐 Frontend URL used:', frontendUrl);
+    
     const html = `
   <div style="font-family: Geist, sans-serif; line-height: 1.6; color: #333;">
     <h2 style="color: #2c3e50;">Password Reset Request</h2>
@@ -140,12 +149,21 @@ exports.forgotPassword = async (req, res) => {
   </div>
 `;
 
-    console.log("Sending email to:", user.email); // <-- check here
-    await sendEmail(user.email, "Password Reset", html);
-
-    res.json({ message: "Check your email for reset link" });
+    console.log("📧 Sending email to:", user.email);
+    
+    try {
+      await sendEmail(user.email, "Password Reset", html);
+      res.json({ message: "Check your email for reset link" });
+    } catch (emailError) {
+      console.error('❌ Failed to send email:', emailError);
+      res.status(500).json({ 
+        error: "Failed to send email. Please try again later.",
+        details: process.env.NODE_ENV === 'development' ? emailError.message : undefined
+      });
+    }
+    
   } catch (err) {
-    console.error(err);
+    console.error('❌ Forgot password error:', err);
     res.status(500).json({ error: "Something went wrong" });
   }
 };
