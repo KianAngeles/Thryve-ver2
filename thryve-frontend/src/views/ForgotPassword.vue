@@ -49,8 +49,6 @@ const submit = async () => {
   }
 };
 
-
-
 </script>
 
 <template>
@@ -85,7 +83,12 @@ const submit = async () => {
           </div>
 
           <!-- Backend Success & Error Messages -->
-          <p v-if="message" class="success-message">{{ message }}</p>
+          <p v-if="message" class="success-message">
+            {{ message }}<br />
+            <small style="color:#888">
+              📩 If you don’t see the email, please check your Spam or Promotions folder.
+            </small>
+          </p>
           <p v-if="errorMessage && !(isEmailFocused || email)" class="error-message">
             {{ errorMessage }}
           </p>
