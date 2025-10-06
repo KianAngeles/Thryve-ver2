@@ -16,6 +16,8 @@ const sendEmail = async (to, subject, html) => {
     console.log("📤 From:", process.env.EMAIL_FROM);
     console.log("📨 To:", to);
 
+    console.log("🔑 Raw key preview:", JSON.stringify(process.env.SENDGRID_API_KEY));
+    console.log("🔑 Key length:", process.env.SENDGRID_API_KEY?.length);
     const response = await sgMail.send(msg);
     console.log("✅ SendGrid email sent successfully!", response[0].statusCode);
     return response;
