@@ -12,9 +12,6 @@
 import { computed } from "vue";
 import { useAuthStore } from "../../stores/auth";
 
-// Import your local image
-import defaultAvatar from "@/assets/uploads/thryve-model.PNG";
-
 const auth = useAuthStore();
 
 const user = computed(() => auth.user);

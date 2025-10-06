@@ -161,9 +161,6 @@ import { ref, computed, onMounted, watch } from "vue";
 import DefaultLayout from "../components/Layout/DefaultLayout.vue";
 import api from "@/utils/api";
 
-import defaultAvatar from "@/assets/uploads/thryve-model.PNG";
-
-
 /* ---------- profile state ---------- */
 const userName = ref("");
 const age = ref(null);
