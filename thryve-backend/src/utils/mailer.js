@@ -1,43 +1,30 @@
-const { Resend } = require('resend');
+const sgMail = require("@sendgrid/mail");
 
-// Initialize Resend with hardcoded API key for Railway troubleshooting
-// TODO: Remove hardcoded key once Railway env vars are working
-const resend = new Resend('re_Xr9ukaDa_CvDYjCqHcVURUxnQLtktGcKQ');
+// Use your SendGrid API key
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const sendEmail = async (to, subject, html) => {
   try {
-    console.log('📧 Attempting to send email to:', to);
-    console.log('📧 Using Resend from:', process.env.FROM_EMAIL || 'onboarding@resend.dev');
-    console.log('📧 Using hardcoded Resend API key (Railway troubleshooting)');
-    console.log('📧 API Key format: re_Xr9***GcKQ');
-    console.log('📧 Environment:', process.env.NODE_ENV);
-    
-    const result = await resend.emails.send({
-      from: process.env.FROM_EMAIL || 'onboarding@resend.dev',
-      to: [to],
+    const msg = {
+      to,
+      from: process.env.EMAIL_FROM, // Must match your verified single sender
       subject,
       html,
-    });
+    };
 
-    console.log('📧 Resend response:', result);
+    console.log("📧 Sending email via SendGrid...");
+    console.log("📤 From:", process.env.EMAIL_FROM);
+    console.log("📨 To:", to);
 
-    // Check if Resend returned an error in the response
-    if (result.error) {
-      console.error('❌ Resend API returned error:', result.error);
-      throw new Error(`Resend API Error: ${result.error.message}`);
+    const response = await sgMail.send(msg);
+    console.log("✅ SendGrid email sent successfully!", response[0].statusCode);
+    return response;
+  } catch (error) {
+    console.error("❌ SendGrid email sending error:", error);
+    if (error.response) {
+      console.error("📩 SendGrid API Response:", error.response.body);
     }
-
-    console.log('✅ Email sent successfully to', to);
-    console.log('📧 Email ID:', result.data?.id);
-    return result;
-  } catch (err) {
-    console.error('❌ Resend email sending error:', err);
-    console.error('📧 Error details:', {
-      name: err.name,
-      message: err.message,
-      statusCode: err.statusCode
-    });
-    throw err; // Re-throw to handle in controller
+    throw error;
   }
 };
 
