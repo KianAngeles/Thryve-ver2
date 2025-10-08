@@ -128,7 +128,7 @@ const addWorkoutHandler = async () => {
     </div>
 
     <!-- Date -->
-    <div class="input-group input-wrapper">
+    <div class="input-group">
       <label>Workout Date</label>
       <input 
         v-model="date" 
@@ -138,7 +138,6 @@ const addWorkoutHandler = async () => {
         :disabled="isLoading"
         @click="openPicker($event)"
       />
-      <i class="pi pi-calendar calendar-icon"></i>
     </div>
 
 
@@ -231,23 +230,9 @@ option {
   padding: 0.5rem;
 }
 
-.input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
 input[type="date"] {
   width: 100%;
   padding-right: 2.5rem; 
-}
-
-.calendar-icon {
-  position: absolute;
-  right: 0.75rem;
-  pointer-events: none;
-  color: var(--muted-foreground);
-  display: none;
 }
 
 </style>
