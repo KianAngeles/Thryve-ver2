@@ -447,6 +447,10 @@ input:-webkit-autofill:active {
   .p-cascadeselect-panel {
     --p-select-overlay-background: white;
   }
+
+  .btn-submit{
+      background-color: var(--muted) !important;
+  }
 }
 
 @media (max-width: 1023px) {
