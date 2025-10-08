@@ -128,7 +128,7 @@ const addWorkoutHandler = async () => {
     </div>
 
     <!-- Date -->
-    <div class="input-wrapper">
+    <div class="input-group input-wrapper">
       <label>Workout Date</label>
       <input 
         v-model="date" 
