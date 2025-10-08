@@ -244,7 +244,7 @@ input:focus,
   cursor: pointer;
   transition: background 0.25s ease;
   text-align: center;
-  background-color: var(--muted);
+  background-color: var(--muted) !important;
 }
 
 .btn-submit:hover {
