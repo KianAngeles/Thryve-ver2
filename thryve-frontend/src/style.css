@@ -449,7 +449,7 @@ input:-webkit-autofill:active {
   }
 
   .btn-submit{
-      background-color: var(--muted) !important;
+      background-color: yellow !important;
   }
 }
 
