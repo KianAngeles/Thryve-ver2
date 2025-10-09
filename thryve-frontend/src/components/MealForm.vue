@@ -312,7 +312,7 @@ input:focus,
 }
 
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
   .btn-submit{
     background-color: var(--muted);
   }
