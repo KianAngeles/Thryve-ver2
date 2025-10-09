@@ -310,4 +310,11 @@ input:focus,
 :deep(.p-datepicker:focus-within .p-datepicker-dropdown) {
   border-color: var(--primary) !important;
 }
+
+
+@media (prefers-color-scheme: dark) {
+  .btn-submit{
+    background-color: var(--muted);
+  }
+}
 </style>
