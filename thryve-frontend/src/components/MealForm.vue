@@ -236,7 +236,7 @@ input:focus,
 
 .btn-submit {
   color: var(--primary-foreground);
-  background-color: yellow;
+  background-color: var(--primary);
   border: none;
   padding: 0.5rem;
   border-radius: var(--radius);
@@ -254,7 +254,6 @@ input:focus,
 .btn-submit:disabled {
   opacity: 0.6;
   cursor: not-allowed;
-  background-color: yellow; 
 }
 
 .form-grid {
